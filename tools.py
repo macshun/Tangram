@@ -12,6 +12,20 @@ import numpy as np
 import collections
 import colorsys
 import math
+from PIL import Image
+from PIL import ImageDraw
+
+############################################################################################
+# 生成深蓝色绘图画布
+def generate_darkblue_canvas():
+    array = np.ndarray((1190, 1190, 3), np.uint8)
+    array[:, :, 0] = 0
+    array[:, :, 1] = 0
+    array[:, :, 2] = 100
+    image = Image.fromarray(array)
+    # 创建绘制对象
+    draw = ImageDraw.Draw(image)
+    return (image,draw)
 
 ############################################################################################
 #Point:描述点坐标
