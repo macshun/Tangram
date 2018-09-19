@@ -30,11 +30,13 @@ no_shape = {
 }
 
 # 初始化
-for i in range(0, 7):
-    cnt_point.append([])
-    # vertex对每个图形存储对应顶点编号，如vertex[0][0]=(x,y)
-    # vertex[0]第0个图形，vertex[0][0]第0个图形的第0个顶点
-    vertex.append([])
+def initial_cntpoint_and_vertex():
+    for i in range(0, 7):
+        cnt_point.append([])
+        # vertex对每个图形存储对应顶点编号，如vertex[0][0]=(x,y)
+        # vertex[0]第0个图形，vertex[0][0]第0个图形的第0个顶点
+        vertex.append([])
+
 
 #形状分析
 class Analysis:

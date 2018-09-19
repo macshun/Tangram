@@ -18,7 +18,12 @@ image = Image.fromarray(array)
 # 创建绘制对象
 draw = ImageDraw.Draw(image)
 
-
+initial_cntpoint_and_vertex()
+print('###############test for vertex################')
+print(vertex)
+print(cnt_point)
+print('###############test for vertex################')
+# cv2.waitKey(0)
 # 电子图案与实物图进行比对分析
 # 1、寻找对应的三角形
 def bfs(graph, v,no_shape,vertex,pattern):
@@ -104,9 +109,10 @@ def main():
     start=time.clock()
     # image = cv2.imread("image/shoot/no_highlight/(4).jpg")
     image = cv2.imread("pictures/2.jpg")
-
     size=image.shape
-    img = cv2.resize(image, (int(size[1]),int(size[0])), interpolation=cv2.INTER_AREA)
+    # img = cv2.resize(image, (int(size[1] * 0.3), int(size[0] * 0.3)), interpolation=cv2.INTER_AREA)
+    img = cv2.resize(image, (int(size[1] * 0.3), int(size[0] * 0.3)), interpolation=cv2.INTER_AREA)
+
     h, w = img.shape[:2]  # 获取图像的高和宽
     # cv2.imshow("Origin", img)  # 显示原始图像
     # cv2.waitKey(0)
@@ -117,7 +123,7 @@ def main():
     blured = cv2.blur(img, (5, 5))  # 进行滤波去掉噪声
     #test for bured
     cv2.imshow('blured picture', blured)
-    # cv2.waitKey(0)
+    cv2.waitKey(0)
     blured_copy=blured.copy()
     # mask：掩码图像，大小比原图多两个像素点。设输入图像大小为width * height, 则掩码的大小必须为 (width+2) * (height+2) ,
     #       mask可为输出，也可作为输入 ，由flags决定。
@@ -125,7 +131,7 @@ def main():
     # 进行泛洪填1
     cv2.floodFill(blured, mask, (w - 1, h - 1), (0, 0, 0), (50,35,50), (185, 190, 190), cv2.FLOODFILL_FIXED_RANGE)
     # test for flood fill
-    cv2.imshow('flood fill', blured)
+    # cv2.imshow('flood fill', blured)
     # cv2.waitKey(0)
     ld = Analysis()
     ld.analy(blured)
@@ -142,6 +148,10 @@ def main():
         ld.shapes['square'] =0
         ld.analy(blured_copy)
     #实物图计算三角形斜边的角度
+    print('###############test for vertex################')
+    print(vertex)
+    print(cnt_point)
+    print('###############test for vertex################')
     for i in range(0, 7):
         angel_hypotenuse=angle(vertex[i][0], vertex[i][1],0)
         no_shape[str(i)].append(angel_hypotenuse)
@@ -167,7 +177,9 @@ if __name__ == '__main__':
         print(pattern.no_shape[str(i)])
         """
     end = time.clock()
+
     main()
+
     for i in range(0, 7):
         if pattern.no_shape[str(i)][4] == False:
             bfs(pattern.graph,i,no_shape,vertex,pattern)
