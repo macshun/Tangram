@@ -14,11 +14,12 @@ import math
 import pattern
 from tools import *
 
-
+############################################################################################
 # 轮廓上的所有点
 cnt_point = []
 # 图形的顶点
 vertex = []
+
 no_shape = {
     '0': [],
     '1': [],
@@ -29,7 +30,8 @@ no_shape = {
     '6': []
 }
 
-# 初始化
+############################################################################################
+# 初始化 vertex, cnt_point
 def initial_cntpoint_and_vertex():
     for i in range(0, 7):
         cnt_point.append([])
@@ -38,12 +40,11 @@ def initial_cntpoint_and_vertex():
         vertex.append([])
 
 
+############################################################################################
 #形状分析
 class Analysis:
     def __init__(self):
         self.shapes = {'triangle': 0, 'square': 0, 'polygons': 0, 'circles': 0,'parallelogram':0}
-
-
     def draw_text_info(self, image):
         c1 = self.shapes['triangle']
         c2 = self.shapes['square']
@@ -54,8 +55,6 @@ class Analysis:
         cv2.putText(image, "square: " + str(c2), (10, 40), cv2.FONT_HERSHEY_PLAIN, 1.2, (255, 0, 0), 1)
         cv2.putText(image, "parallelogram: " + str(c5), (10, 60), cv2.FONT_HERSHEY_PLAIN, 1.2, (255, 0, 0), 1)
         return  image
-
-
     # load the image, convert it to grayscale, blur it slightly,
     # and threshold it
     def analy(self, image):
@@ -68,22 +67,14 @@ class Analysis:
                 num += 1
                 if num == 1:
                     thresh = cv2.inRange(hsv, dict[d][0], dict[d][1])
-                # cv2.inRange(hsv, lower_red, upper_red):
-                #   hsv指的是原图
-                #   lower_red指的是图像中低于这个lower_red的值，图像值变为0
-                #   upper_red指的是图像中高于这个upper_red的值，图像值变为0
-                # 而在lower_red～upper_red之间的值变成255
-                mask = cv2.inRange(hsv, dict[d][0], dict[d][1])
-                #cv2.addWeighted(src1, alpha, src2, beta, gamma[, dst[, dtype]]) ：
-                # dst = src1 * alpha + src2 * beta + gamma;
-                #   src1 – first input array.
-                #   alpha – weight of the first array elements.
-                #   src2 – second input array of the same size and channel number as src1.
-                #   beta – weight of the second array elements.
-                #   dst – output array that has the same size and number of channels as the input arrays.
-                #   gamma – scalar added to each sum.
-                #   dtype – optional depth of the output array; when both input arrays have the same depth,
-                #         dtype can be set to -1, which will be equivalent to src1.depth().
+                if len(dict[d])==4:
+                    mask1=cv2.inRange(hsv, dict[d][0], dict[d][1])
+                    mask2=cv2.inRange(hsv, dict[d][2], dict[d][3])
+                    mask = cv2.addWeighted(mask1, 1, mask2, 1, 0)
+                else:
+                    mask = cv2.inRange(hsv, dict[d][0], dict[d][1])
+                #cv2.imshow(d,mask)
+                #cv2.waitKey(0)
                 thresh = cv2.addWeighted(thresh, 1, mask, 1, 0)
         blurred = cv2.GaussianBlur(thresh, (5, 5), 0)
         thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
@@ -138,7 +129,7 @@ class Analysis:
                 h=rect[1][1]
                 ar=w/float(h)
                 print(ar)
-                box = cv2.boxPoints(rect) #获取矩形四个顶点坐标
+                box = cv2.boxPoints(rect)
                 box = np.int0(box)
                 cv2.drawContours(image, [box], 0, (0, 0, 255), 2)
                 if ar>=0.70 and ar<=2.00:
@@ -187,11 +178,14 @@ class Analysis:
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
             im = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-            color=Color(cX,cY,im)
+            #根据螺丝的半径，圆心重新确定识别的点（cx-R,cy-R)
+            color=Color(cX-5,cY-5,im)
+            #color=Color(vertex[k][0].x,vertex[k][0].y,im)
             # draw the contour and center of the shape on the image
             cv2.drawContours(image, [c], -1, (0, 255, 0), 1)
             cv2.putText(image, str(color)+" "+shape_type, (cX - 20, cY - 20),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+            cv2.circle(image, (cX,cY), 2, (255, 0, 0), 2)
             no_shape[str(k)].append(shape_type)
             no_shape[str(k)].append(color)
             no_shape[str(k)].append((cX, cY))

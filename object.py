@@ -1,6 +1,7 @@
 import numpy as np
 import imutils
 import cv2
+from PIL import Image
 import collections
 import colorsys
 import time
@@ -10,12 +11,14 @@ from PIL import ImageDraw
 import random
 from tools import *
 from analysis import *
+
 ############################################################################################
 # 生成深蓝色画图画布
 image, draw = generate_darkblue_canvas()
 # 初始化analysis.py中的vetex和cnt_point
 initial_cntpoint_and_vertex()
 
+'''
 ############################################################################################
 # 电子图案与实物图进行比对分析
 # 1、寻找对应的三角形
@@ -96,24 +99,26 @@ def bfs(graph, v,no_shape,vertex,pattern):
             if pattern.no_shape[str(temp)][4]==False and temp not in queue:
                 queue.insert(0,temp)
         queue.pop()
-
+'''
 ############################################################################################
-#main:
 def main():
     start=time.clock()
-    # image = cv2.imread("image/shoot/no_highlight/(4).jpg")
-    image = cv2.imread("pictures/1.jpg")
-
+    #image = cv2.imread("image/shoot/no_highlight/(4)_1.jpg")
+    #strs = "image/pictures/" + str(i) + ".jpg"
+    # image = cv2.imread("image/pictures/" + str(10) + ".jpg")
+    #image = cv2.imread("image/pattern.jpg")
+    image = cv2.imread('pictures/10.jpg')
     size=image.shape
     img = cv2.resize(image, (int(size[1]),int(size[0])), interpolation=cv2.INTER_AREA)
     h, w = img.shape[:2]  # 获取图像的高和宽
     #cv2.imshow("Origin", img)  # 显示原始图像
     #cv2.waitKey(0)
     #存在高光时，适量降低图片亮度
-    img = contrast_brightness_image(img, 1.2,-4)
-    cv2.imshow("k",img)
-    cv2.waitKey(0)
-    blured = cv2.blur(img, (5, 5))  # 进行滤波去掉噪声
+    img = contrast_brightness_image(img, 1.5,-20)
+    #cv2.imshow("k",img)
+    #cv2.waitKey(0)
+    blured = cv2.GaussianBlur(img, (5, 5), 0)
+    #blured = cv2.blur(img, (5, 5))  # 进行滤波去掉噪声
     blured_copy=blured.copy()
     mask = np.zeros((h + 2, w + 2), np.uint8)  # 掩码长和宽都比输入图像多两个像素点，满水填充不会超出掩码的非零边缘
     # 进行泛洪填1
@@ -139,6 +144,7 @@ def main():
     for i in range(0,7):
        pattern.no_shape[str(i)].append(False)
 
+############################################################################################
 if __name__ == '__main__':
     start = time.clock()
     src = cv2.imread("image/mould/06.jpg")
@@ -151,18 +157,15 @@ if __name__ == '__main__':
     for i in range(0, 7):
         pattern.angel_hypotenuse =angle(pattern.vertex[i][0], pattern.vertex[i][1],1)
         pattern.no_shape[str(i)].append(pattern.angel_hypotenuse)
-        """
-    for i in range(0, 7):
-        print(pattern.no_shape[str(i)])
-        """
-    end = time.clock()
     main()
+
     for i in range(0, 7):
         if pattern.no_shape[str(i)][4] == False:
-            bfs(pattern.graph,i,no_shape,vertex,pattern)
+            #bfs函数中添加draw变量
+            bfs(pattern.graph,i,no_shape,vertex,pattern, draw)
     for i in range(0,7):
         print(no_shape[str(i)])
 
     image.show()
-    name=random.randint(0, 30)
-    image.save("pictures/output/"+str(name)+".jpg")
+    #name=random.randint(0, 30)
+    #image.save("f:/"+str(name)+".jpg")

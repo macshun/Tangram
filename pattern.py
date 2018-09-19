@@ -334,7 +334,6 @@ def Near():
                 #  end='')
         print("\n")
 
-
 #求具体相邻的边的部分
 def detail_point(n1,n2,point,edge):
     #n1顶点图形，n2边图形
@@ -588,8 +587,7 @@ class ShapeAnalysis:
         result = np.zeros((h, w, ch), dtype=np.uint8)
         for d in color_dict:
             mask = cv2.inRange(hsv, color_dict[d][0], color_dict[d][1])
-            # bilateralFilter(img,d,’p1’,’p2’) - 双边滤波器：在保证边界清晰的情况下有效的去掉噪声。
-            #   参数：d是领域的直径，后面两个参数是空间高斯函数标准差和灰度值相似性高斯函数标准差。
+
             mask = cv2.bilateralFilter(mask, 9, 75, 75)
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
             closed = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
@@ -739,8 +737,6 @@ class ShapeAnalysis:
         cv2.waitKey(0)
         #cv2.imwrite("D:/test-result.png", self.draw_text_info(result))
         return self.shapes
-
-
 
 if __name__ == '__main__':
     main()
