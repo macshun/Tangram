@@ -10,17 +10,21 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 
-
-def catch_an_image():
-    # cap = cv2.VideoCapture(1)# 控制外部摄像头
-    cap = cv2.VideoCapture(0)#控制本地摄像头
+############################################################################################
+#catch_an_image: 使用摄像头捕获一张图片。
+#       c_id:  0 - 本地摄像头， 1 - 外部摄像头
+def catch_an_image(c_id = 0):
+    cap = cv2.VideoCapture(c_id)
     ret, img = cap.read()
     cap.release()
     return img
 
-def real_images():
+############################################################################################
+#real_images: 实时捕获摄像头。
+#       c_id:  0 - 本地摄像头， 1 - 外部摄像头
+def real_images(c_id = 0):
     # cap = cv2.VideoCapture(1)#控制外部摄像头
-    cap = cv2.VideoCapture(0)#控制本地摄像头
+    cap = cv2.VideoCapture(c_id)#控制本地摄像头
 
     while True:
         ret, frame = cap.read()
@@ -34,7 +38,8 @@ def real_images():
     # When everything done, release the capture
     cap.release()
     cv2.destroyAllWindows()
-
+    
+############################################################################################
 #测试捕获一张图片
 def test_for_image():
     img = catch_an_image()
@@ -42,10 +47,12 @@ def test_for_image():
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+############################################################################################
 #测试实时录像
 def test_for_real_images():
     real_images()
 
+############################################################################################
 if __name__ == '__main__':
     test_for_image()
     # test_for_real_images()
