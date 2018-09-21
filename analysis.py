@@ -76,13 +76,34 @@ class Analysis:
                 #cv2.imshow(d,mask)
                 #cv2.waitKey(0)
                 thresh = cv2.addWeighted(thresh, 1, mask, 1, 0)
+        #
+        cv2.imshow('thresh inital', thresh)
         blurred = cv2.GaussianBlur(thresh, (5, 5), 0)
-        thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
+        #show the GaussianBlur picture
+        cv2.imshow('GaussianBlur', blurred)
+        ret, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
+        #test for threshold
+        cv2.imshow('threshold', thresh)
+        cv2.waitKey(0)
+        #生成kernel:
+        # array([[1, 1, 1, 1, 1],
+        #        [1, 1, 1, 1, 1],
+        #        [1, 1, 1, 1, 1],
+        #        [1, 1, 1, 1, 1],
+        #        [1, 1, 1, 1, 1]], dtype=uint8)
+        # kernel = np.ones(5,5)
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        #进行闭运算，形成封闭图形
         closed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+        #腐蚀图像
         closed = cv2.erode(closed, None, iterations=4)
+        #膨胀图像
         thresh = cv2.dilate(closed, None, iterations=4)
-        # find contours in the thresholded image
+        # findContours：基于二值图像寻找物体的轮廓
+        #       image:      二值图像
+        #       mode:       定义轮廓检索模式
+        #       method:     定义轮廓近似方法
+        #       return:     contours：hierarchy
         cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
                                 cv2.CHAIN_APPROX_SIMPLE)
         cnts = cnts[0] if imutils.is_cv2() else cnts[1]
@@ -91,7 +112,7 @@ class Analysis:
         for c in cnts:
             #print(c)
             # 轮廓逼近
-            epsilon = 0.05 * cv2.arcLength(c, True)
+            epsilon = 0.05 * cv2.arcLength(c, True) # 计算轮廓周长
             approx = cv2.approxPolyDP(c, epsilon, True)
             # 分析几何形状
             corners = len(approx)

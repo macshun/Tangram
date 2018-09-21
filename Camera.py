@@ -23,8 +23,7 @@ def catch_an_image(c_id = 0):
 #real_images: 实时捕获摄像头。
 #       c_id:  0 - 本地摄像头， 1 - 外部摄像头
 def real_images(c_id = 0):
-    # cap = cv2.VideoCapture(1)#控制外部摄像头
-    cap = cv2.VideoCapture(c_id)#控制本地摄像头
+    cap = cv2.VideoCapture(c_id)
 
     while True:
         ret, frame = cap.read()
@@ -38,7 +37,7 @@ def real_images(c_id = 0):
     # When everything done, release the capture
     cap.release()
     cv2.destroyAllWindows()
-    
+
 ############################################################################################
 #测试捕获一张图片
 def test_for_image():

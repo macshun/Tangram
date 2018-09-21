@@ -107,7 +107,7 @@ def main():
     #strs = "image/pictures/" + str(i) + ".jpg"
     # image = cv2.imread("image/pictures/" + str(10) + ".jpg")
     #image = cv2.imread("image/pattern.jpg")
-    image = cv2.imread('pictures/10.jpg')
+    image = cv2.imread('pictures/1.jpg')
     size=image.shape
     img = cv2.resize(image, (int(size[1]),int(size[0])), interpolation=cv2.INTER_AREA)
     h, w = img.shape[:2]  # 获取图像的高和宽

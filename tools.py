@@ -160,9 +160,14 @@ def Color(x,y,image):
 def ostu(img):
     area=0
     image=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) # 转灰度
+    cv2.imshow('转灰度', image)
+    cv2.waitKey(0)
     blur = cv2.GaussianBlur(image,(5,5),0) # 阈值一定要设为 0 ！高斯模糊
+    cv2.imshow('高斯模糊', blur)
+    cv2.waitKey(0)
     ret3,th3 = cv2.threshold(blur,60,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU) # 二值化 0 = black ; 1 = white
-    #cv2.imshow('image', th3)
+    cv2.imshow('二值化 threshold', th3)
+    cv2.waitKey(0)
     #a = cv2.waitKey(0)
     # print a
     #print(th3[355,16])

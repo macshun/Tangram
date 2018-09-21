@@ -411,8 +411,8 @@ def main():
 
     for i in range(1,50):
         # strs="image/pictures/"+str(i)+".jpg"
-        strs="pictures/"+str(i)+".jpg"
-        # strs="pictures/1.jpg"
+        # strs="pictures/"+str(i)+".jpg"
+        strs="pictures/1.jpg"
 
         print(strs)
         # image=cv2.imread("image/pictures/"+str(i)+".jpg")
